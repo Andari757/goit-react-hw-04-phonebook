@@ -2,19 +2,17 @@ import { useState } from "react"
 import styles from "./style.module.css"
 import PropTypes from "prop-types"
 export default function ContactForm({ onSubmit }) {
-    const [name, setName] = useState('')
-    const [number, setNumber] = useState('')
+    const [data, setData] = useState({ name: "", number: "" })
 
     const handleChange = (e) => {
-        if (e.target.name === "name") setName(e.target.value)
-        else if (e.target.name === "number") setNumber(e.target.value)
+        if (e.target.name === "name") setData((prev) => { return { ...prev, name: e.target.value } })
+        else if (e.target.name === "number") setData((prev) => { return { ...prev, number: e.target.value } })
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        onSubmit({ name, number })
-        setName("");
-        setNumber('')
+        onSubmit(data)
+        setData({})
     }
 
     return (
@@ -24,7 +22,7 @@ export default function ContactForm({ onSubmit }) {
             <input
                 className={styles.input}
                 onChange={handleChange}
-                value={name}
+                value={data.name}
                 id="text"
                 type="text"
                 name="name"
@@ -38,7 +36,7 @@ export default function ContactForm({ onSubmit }) {
             <input
                 className={styles.input}
                 onChange={handleChange}
-                value={number}
+                value={data.number}
                 id="number"
                 type="tel"
                 name="number"
