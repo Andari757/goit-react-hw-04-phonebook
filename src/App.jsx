@@ -1,56 +1,66 @@
-import { useState } from "react";
-import Section from "components/Section/Section";
-import Statistics from "components/Statistics/Statistics";
-import FeedbackOptions from "components/FeedbackOptions/FeedbackOptions";
-import Notification from "components/Notification/Notification";
-const options = ['good', 'neutral', 'bad']
+import { useState, useEffect } from 'react'
+import { nanoid } from 'nanoid'
+import ContactForm from "components/ContactForm/ContactForm"
+import ContactList from "components/ContactList/ContactList"
+import Filter from "components/Filter/Filter"
+
 export function App() {
+  const [contacts, setContacts] = useState(() => JSON.parse(localStorage.getItem("contacts")) ? JSON.parse(localStorage.getItem("contacts")) : [])
+  const [filter, setFilter] = useState("")
 
-  const [reviews, setReviews] = useState({ good: 0, bad: 0, neutral: 0 });
-  // const [good, setGood] = useState(0);
-  // const [bad, setBad] = useState(0);
-  // const [neutral, setNeutral] = useState(0);
+  useEffect(() => { localStorage.setItem("contacts", JSON.stringify(contacts)) }, [contacts])
+  const addContact = (data) => {
+    if (contacts.find(contact => contact.name === data.name)) {
+      alert(`${data.name} already exists`)
+      return;
+    }
+    setContacts((prev) => {
+      const contact = {
+        id: nanoid(),
+        name: data.name,
+        number: data.number
+      }
+      return [...prev, contact]
 
-  function countTotalFeedback() {
-    return reviews.good + reviews.bad + reviews.neutral
-  }
-  function countPositiveFeedbackPercentage() {
-    return reviews.good / (reviews.good + reviews.bad + reviews.neutral) * 100
-  }
-  const onLeaveFeedback = (option) => {
-    setReviews((prev) => {
-      let res = { ...prev }
-      res[option] += 1
-      return res
     })
-    // if (option === "good") setGood((prev) => prev + 1)
-    // else if (option === "bad") setBad((prev) => prev + 1)
-    // else if (option === "neutral") setNeutral((prev) => prev + 1)
   }
-  const total = countTotalFeedback();
-  const percentage = countPositiveFeedbackPercentage();
+  function getFilteredBooks() {
+    if (!filter) {
+      return contacts;
+    }
+    return contacts.filter(({ name }) => name.toLowerCase().includes(filter.toLowerCase()))
+
+  }
+  const filterContacts = (e) => {
+    setFilter(e.target.value)
+  }
+  const remove = (name) => {
+    setContacts((prev) => {
+      return prev.filter(contact => contact.name !== name)
+
+    }
+    )
+  }
+
+
+  const data = getFilteredBooks()
   return (
-    <div className="app" >
-      <Section
-        title="Please leave feedback">
-        <FeedbackOptions
-          options={options}
-          onLeaveFeedback={onLeaveFeedback} />
-      </Section>
-
-
-      <Section
-        title="Statistics">
-        {total > 0
-          ? <Statistics
-            good={reviews.good}
-            neutral={reviews.neutral}
-            bad={reviews.bad}
-            total={total}
-            positivePercentage={percentage}
-          />
-          : <Notification message="There is no feedback" />}
-      </Section>
+    <div className="app">
+      <div className="phone-book">
+        <h1>Phonebook</h1>
+        <ContactForm
+          onSubmit={addContact}
+        />
+        <h2>Contacts</h2>
+        <Filter
+          onChange={filterContacts}
+          value={filter} />
+        <ContactList
+          contacts={data}
+          onClick={remove}
+        />
+      </div>
     </div >
   )
-};
+
+}
