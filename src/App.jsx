@@ -10,9 +10,9 @@ export function App() {
   const one = useRef(true);
 
   useEffect(() => {
-    setContacts(JSON.parse(localStorage.getItem("contacts")) ?
-      JSON.parse(localStorage.getItem("contacts")) :
-      [])
+    const data = JSON.parse(localStorage.getItem("contacts"))
+    if (!data) return
+    setContacts(data)
   }, [])
 
   useEffect(() => {
