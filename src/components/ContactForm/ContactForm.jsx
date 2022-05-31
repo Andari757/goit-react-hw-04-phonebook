@@ -12,7 +12,7 @@ export default function ContactForm({ onSubmit }) {
     const handleSubmit = (e) => {
         e.preventDefault()
         onSubmit(data)
-        setData({})
+        setData({ name: "", number: "" })
     }
 
     return (

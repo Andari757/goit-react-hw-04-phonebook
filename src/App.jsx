@@ -11,7 +11,7 @@ export function App() {
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("contacts"))
-    if (!data) return
+    if (!data?.length) return
     setContacts(data)
   }, [])
 
