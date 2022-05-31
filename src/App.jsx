@@ -9,19 +9,28 @@ export function App() {
   const [filter, setFilter] = useState("");
   const one = useRef(true);
 
-  useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("contacts"))
-    if (!data?.length) return
-    setContacts(data)
-  }, [])
-
+  // useEffect(() => {
+  //   const data = JSON.parse(localStorage.getItem("contacts"))
+  //   if (!data?.length) return
+  //   setContacts(data)
+  // }, [])
   useEffect(() => {
     if (one.current) {
+      const data = JSON.parse(localStorage.getItem("contacts"))
+      if (data?.length) setContacts(data);
       one.current = false;
-      return;
     }
-    localStorage.setItem("contacts", JSON.stringify(contacts))
+    else {
+      localStorage.setItem("contacts", JSON.stringify(contacts))
+    }
   }, [contacts])
+  // useEffect(() => {
+  //   if (one.current) {
+  //     one.current = false;
+  //     return;
+  //   }
+  //   localStorage.setItem("contacts", JSON.stringify(contacts))
+  // }, [contacts])
 
   const addContact = (data) => {
     if (contacts.find(contact => contact.name === data.name)) {
